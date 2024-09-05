@@ -1,0 +1,760 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace MinecraftPotions
+{
+    public class Ingredient
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
+
+        public Ingredient(string name, string description, string location)
+        {
+            Name = name;
+            Description = description;
+            Location = location;
+        }
+
+        public void PrintInfo()
+        {
+            Console.WriteLine($"| {Name,-20} | {Description,-40} | Location: {Location,-20} |");
+        }
+    }
+
+    public enum PotionCategory
+    {
+        Positive,
+        Negative,
+        Neutral
+    }
+
+    public class Potion
+    {
+        public string Name { get; set; }
+        public string Duration { get; set; }
+        public string Effect { get; set; }
+        public string Description { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
+        public PotionCategory Category { get; set; }
+
+        public Potion(string name, string duration, string effect, string description, PotionCategory category)
+        {
+            Name = name;
+            Duration = duration;
+            Effect = effect;
+            Description = description;
+            Ingredients = new List<Ingredient>();
+            Category = category;
+        }
+
+        public void AddIngredient(Ingredient ingredient)
+        {
+            Ingredients.Add(ingredient);
+        }
+
+        public void PrintRecipe()
+        {
+            Console.WriteLine($"Recipe for {Name}:");
+            Console.WriteLine(new string('-', 40));
+            foreach (var ingredient in Ingredients)
+            {
+                Console.WriteLine($"| {ingredient.Name,-36} |");
+            }
+            Console.WriteLine(new string('-', 40));
+        }
+
+        public void PrintInfo()
+        {
+            Console.WriteLine($"{Name} - {Duration}: {Effect}. Description: {Description}");
+        }
+
+        public bool IsPositive => Category == PotionCategory.Positive;
+        public bool IsNegative => Category == PotionCategory.Negative;
+        public bool IsNeutral => Category == PotionCategory.Neutral;
+    }
+
+
+    public class PotionUsage
+    {
+        public string Usage { get; set; }
+        public Potion Potion { get; set; }
+
+        public PotionUsage(string usage, Potion potion)
+        {
+            Usage = usage;
+            Potion = potion;
+        }
+
+        public void PrintUsage()
+        {
+            Console.WriteLine($"Usage for {Potion.Name}: {Usage}");
+        }
+    }
+
+
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+                var ingredients = InitializeIngredients();
+                var potions = InitializePotions(ingredients);
+
+                bool running = true;
+                while (running)
+                {
+                    running = MainMenu(potions, ref running);
+                }
+            
+
+            static List<Ingredient> InitializeIngredients()
+            {
+                return new List<Ingredient>
+            {
+                new Ingredient("Nether Wart", "Basic ingredient for potions", "Found in the Nether"),
+                new Ingredient("Blaze Powder", "Source of strength for potions", "From Blaze Rods in the Nether"),
+                new Ingredient("Gunpowder", "Turns potion into a splash potion", "Dropped by Creepers"),
+                new Ingredient("Dragon's Breath", "Turns a splash potion into a lingering potion", "Obtained from Ender Dragon"),
+                new Ingredient("Redstone Dust", "Extends the duration of a potion", "Crafted from Redstone"),
+                new Ingredient("Glowstone Dust", "Enhances the level of a potion", "Crafted from Glowstone"),
+                new Ingredient("Fermented Spider Eye", "Corrupts the potion effect", "Crafted from Spider Eye, Sugar, and Brown Mushroom"),
+                new Ingredient("Splash Water Bottle", "Turns a potion into a splash potion", "Crafted from Water Bottle and Gunpowder"),
+                new Ingredient("Lingering Water Bottle", "Turns a splash potion into a lingering potion", "Crafted from Splash Water Bottle and Dragon's Breath"),
+                new Ingredient("Sugar", "Increases speed", "Crafted from Sugar Cane"),
+                new Ingredient("Rabbit's Foot", "Gives Jump Boost", "Obtained from Rabbits"),
+                new Ingredient("Glistering Melon Slice", "Restores instant health", "Crafted from Melon and Gold Nugget"),
+                new Ingredient("Spider Eye", "Inflicts poison", "Dropped by Spiders"),
+                new Ingredient("Pufferfish", "Allows underwater breathing", "Caught while fishing"),
+                new Ingredient("Magma Cream", "Provides fire resistance", "Crafted from Magma Cube Slimeballs and Blaze Powder"),
+                new Ingredient("Golden Carrot", "Provides night vision", "Crafted from Carrot and Gold Nuggets"),
+                new Ingredient("Ghast Tear", "Restores regeneration", "Dropped by Ghasts in the Nether"),
+                new Ingredient("Turtle Shell", "Provides slowness and resistance", "Crafted from Scutes dropped by Turtles"),
+                new Ingredient("Phantom Membrane", "Provides slow falling", "Dropped by Phantoms"),
+                new Ingredient("Cobweb", "Used for weaving", "Found in abandoned mineshafts"),
+                new Ingredient("Slime Block", "Used for oozing", "Crafted from Slimeballs"),
+                new Ingredient("Stone", "Infests", "Smelted from Cobblestone"),
+                new Ingredient("Breeze Rod", "Charged with wind", "Dropped by Wind Elementals")
+
+            };
+            }
+
+
+            static List<Potion> InitializePotions(List<Ingredient> ingredients)
+            {
+
+                var netherWart = ingredients.Find(i => i.Name == "Nether Wart");
+                var blazePowder = ingredients.Find(i => i.Name == "Blaze Powder");
+                var gunpowder = ingredients.Find(i => i.Name == "Gunpowder");
+                var dragonBreath = ingredients.Find(i => i.Name == "Dragon's Breath");
+                var redstoneDust = ingredients.Find(i => i.Name == "Redstone Dust");
+                var glowstoneDust = ingredients.Find(i => i.Name == "Glowstone Dust");
+                var fermentedSpiderEye = ingredients.Find(i => i.Name == "Fermented Spider Eye");
+                var splashWaterBottle = ingredients.Find(i => i.Name == "Splash Water Bottle");
+                var lingeringWaterBottle = ingredients.Find(i => i.Name == "Lingering Water Bottle");
+                var sugar = ingredients.Find(i => i.Name == "Sugar");
+                var rabbitsFoot = ingredients.Find(i => i.Name == "Rabbit's Foot");
+                var glisteringMelon = ingredients.Find(i => i.Name == "Glistering Melon Slice");
+                var spiderEye = ingredients.Find(i => i.Name == "Spider Eye");
+                var pufferfish = ingredients.Find(i => i.Name == "Pufferfish");
+                var magmaCream = ingredients.Find(i => i.Name == "Magma Cream");
+                var goldenCarrot = ingredients.Find(i => i.Name == "Golden Carrot");
+                var ghastTear = ingredients.Find(i => i.Name == "Ghast Tear");
+                var turtleShell = ingredients.Find(i => i.Name == "Turtle Shell");
+                var phantomMembrane = ingredients.Find(i => i.Name == "Phantom Membrane");
+                var cobweb = ingredients.Find(i => i.Name == "Cobweb");
+                var slimeBlock = ingredients.Find(i => i.Name == "Slime Block");
+                var stone = ingredients.Find(i => i.Name == "Stone");
+                var breezeRod = ingredients.Find(i => i.Name == "Breeze Rod");
+
+                var potions = new List<Potion>
+    {
+        new Potion("Potion of Regeneration", "0:45", "Restores 18♥ × 9 health over time", "Restores 1♥ every 50 ticks (2.5 seconds)", PotionCategory.Positive),
+        new Potion("Potion of Regeneration +", "1:30 (JE) / 2:00 (BE)", "Restores 36♥ × 18 (JE) or 48♥ × 24 (BE) health over time", "Restores 1♥ every 50 ticks (2.5 seconds)", PotionCategory.Positive),
+        new Potion("Potion of Regeneration II", "0:22.5", "Restores 18♥ × 9 health over time", "Restores 1♥ every 25 ticks (1.25 seconds)", PotionCategory.Positive),
+        new Potion("Potion of Swiftness", "3:00", "Increases speed and jump distance by 20%", "Increases FOV to 6.73 meters per second sprinting", PotionCategory.Positive),
+        new Potion("Potion of Swiftness +", "8:00", "Increases speed and jump distance by 40%", "Increases FOV to 7.85 meters per second sprinting", PotionCategory.Positive),
+        new Potion("Potion of Swiftness II", "1:30", "Increases speed and jump distance by 40%", "Increases FOV to 7.85 meters per second sprinting", PotionCategory.Positive),
+        new Potion("Potion of Fire Resistance", "3:00", "Gives immunity to all heat-related damage", "Immunity to all heat-related damage", PotionCategory.Positive),
+        new Potion("Potion of Fire Resistance +", "8:00", "Gives immunity to all heat-related damage", "Immunity to all heat-related damage", PotionCategory.Positive),
+        new Potion("Potion of Healing", "Instant", "Restores 4♥♥ health", "Restores 4 hearts instantly", PotionCategory.Positive),
+        new Potion("Potion of Healing II", "Instant", "Restores 8♥♥♥♥ health", "Restores 8 hearts instantly", PotionCategory.Positive),
+        new Potion("Potion of Night Vision", "3:00", "Gives night vision for 3 minutes", "Allows the user to see in the dark", PotionCategory.Positive),
+        new Potion("Potion of Night Vision +", "8:00", "Gives night vision for 8 minutes", "Allows the user to see in the dark", PotionCategory.Positive),
+        new Potion("Potion of Speed", "3:00", "Increases speed by 20%", "Decreases speed by 20%", PotionCategory.Positive),
+        new Potion("Potion of Jump Boost", "3:00", "Increases jump height by 1.2 blocks", "Decreases jump height by 1.2 blocks", PotionCategory.Positive),
+        new Potion("Potion of Water Breathing", "3:00", "Allows breathing underwater for 3 minutes", "None", PotionCategory.Positive),
+        new Potion("Potion of Invisibility", "3:00", "Makes the user invisible", "Makes the user invisible", PotionCategory.Positive),
+        new Potion("Potion of Strength", "3:00", "Increases melee attack damage by 3 points", "Decreases melee attack damage by 3 points", PotionCategory.Positive),
+        new Potion("Potion of Turtle Shell", "3:00", "Gives slowness and resistance", "Gives slowness and resistance", PotionCategory.Positive),
+        new Potion("Potion of Slow Falling", "1:30", "Prevents fall damage and slows descent", "Prevents fall damage and slows descent", PotionCategory.Positive),
+
+        // Negative Potions
+        new Potion("Potion of Poison", "0:45", "Inflicts poison for 45 seconds", "Inflicts poison for 45 seconds", PotionCategory.Negative),
+        new Potion("Potion of Weaving", "3:00", "Allows weaving", "Allows weaving", PotionCategory.Negative),
+        new Potion("Potion of Oozing", "3:00", "Causes oozing", "Causes oozing", PotionCategory.Negative),
+        new Potion("Potion of Infested", "3:00", "Causes infestation", "Causes infestation", PotionCategory.Negative),
+        new Potion("Potion of Wind Charged", "3:00", "Charges with wind", "Charges with wind", PotionCategory.Negative),
+
+        // Neutral Potions
+        new Potion("Potion of Luck", "NA", "Improves quality and chances of getting rare loot", "NA", PotionCategory.Neutral),
+        new Potion("Potion of Decay", "NA", "Imposes Wither effect on the target", "NA", PotionCategory.Neutral)
+    };
+
+                // Add ingredients to each potion
+                // Potion of Regeneration
+                potions[0].AddIngredient(netherWart);
+                potions[0].AddIngredient(glisteringMelon);
+
+                // Potion of Regeneration +
+                potions[1].AddIngredient(netherWart);
+                potions[1].AddIngredient(glisteringMelon);
+
+                // Potion of Regeneration II
+                potions[2].AddIngredient(netherWart);
+                potions[2].AddIngredient(glisteringMelon);
+                potions[2].AddIngredient(redstoneDust);
+
+                // Potion of Swiftness
+                potions[3].AddIngredient(netherWart);
+                potions[3].AddIngredient(sugar);
+
+                // Potion of Swiftness +
+                potions[4].AddIngredient(netherWart);
+                potions[4].AddIngredient(sugar);
+                potions[4].AddIngredient(glowstoneDust);
+
+                // Potion of Swiftness II
+                potions[5].AddIngredient(netherWart);
+                potions[5].AddIngredient(sugar);
+                potions[5].AddIngredient(glowstoneDust);
+
+                // Potion of Fire Resistance
+                potions[6].AddIngredient(netherWart);
+                potions[6].AddIngredient(magmaCream);
+
+                // Potion of Fire Resistance +
+                potions[7].AddIngredient(netherWart);
+                potions[7].AddIngredient(magmaCream);
+                potions[7].AddIngredient(glowstoneDust);
+
+                // Potion of Healing
+                potions[8].AddIngredient(netherWart);
+                potions[8].AddIngredient(glisteringMelon);
+
+                // Potion of Healing II
+                potions[9].AddIngredient(netherWart);
+                potions[9].AddIngredient(glisteringMelon);
+                potions[9].AddIngredient(glowstoneDust);
+
+                // Potion of Night Vision
+                potions[10].AddIngredient(netherWart);
+                potions[10].AddIngredient(goldenCarrot);
+
+                // Potion of Night Vision +
+                potions[11].AddIngredient(netherWart);
+                potions[11].AddIngredient(goldenCarrot);
+                potions[11].AddIngredient(glowstoneDust);
+
+                // Potion of Speed
+                potions[12].AddIngredient(netherWart);
+                potions[12].AddIngredient(sugar);
+
+                // Potion of Jump Boost
+                potions[13].AddIngredient(netherWart);
+                potions[13].AddIngredient(rabbitsFoot);
+
+                // Potion of Poison
+                potions[14].AddIngredient(netherWart);
+                potions[14].AddIngredient(spiderEye);
+
+                // Potion of Water Breathing
+                potions[15].AddIngredient(netherWart);
+                potions[15].AddIngredient(pufferfish);
+
+                // Potion of Invisibility
+                potions[16].AddIngredient(netherWart);
+                potions[16].AddIngredient(goldenCarrot);
+                potions[16].AddIngredient(fermentedSpiderEye);
+
+                // Potion of Strength
+                potions[17].AddIngredient(netherWart);
+                potions[17].AddIngredient(blazePowder);
+
+                // Potion of Turtle Shell
+                potions[18].AddIngredient(netherWart);
+                potions[18].AddIngredient(turtleShell);
+
+                // Potion of Slow Falling
+                potions[19].AddIngredient(netherWart);
+                potions[19].AddIngredient(phantomMembrane);
+
+                // Potion of Weaving
+                potions[20].AddIngredient(netherWart);
+                potions[20].AddIngredient(cobweb);
+
+                // Potion of Oozing
+                potions[21].AddIngredient(netherWart);
+                potions[21].AddIngredient(slimeBlock);
+
+                // Potion of Infested
+                potions[22].AddIngredient(netherWart);
+                potions[22].AddIngredient(stone);
+
+                // Potion of Wind Charged
+                potions[23].AddIngredient(netherWart);
+                potions[23].AddIngredient(breezeRod);
+
+                return potions;
+            }
+
+
+            static bool MainMenu(List<Potion> potions, ref bool running)
+            {
+                int selectedIndex = 0;
+                string[] menuOptions = { "View Ingredients", "View Potion Recipes", "View Potion Usage", "Exit" };
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("=== Minecraft Potion Menu ===");
+                    Console.ResetColor();
+                    Console.WriteLine("+---------------------------+");
+                    Console.WriteLine("| Options                   |");
+                    Console.WriteLine("+---------------------------+");
+
+                    for (int i = 0; i < menuOptions.Length; i++)
+                    {
+                        if (i == selectedIndex)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.WriteLine($"| > {menuOptions[i],-24} < |");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"|   {menuOptions[i],-24}  |");
+                        }
+                        Console.ResetColor();
+                    }
+
+                    Console.WriteLine("+---------------------------+");
+
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        selectedIndex = (selectedIndex == 0) ? menuOptions.Length - 1 : selectedIndex - 1;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        selectedIndex = (selectedIndex == menuOptions.Length - 1) ? 0 : selectedIndex + 1;
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        switch (selectedIndex)
+                        {
+                            case 0:
+                                ViewIngredients();
+                                break;
+                            case 1:
+                                ViewPotionCategories(potions);
+                                break;
+                            case 2:
+                                ViewPotionUsage(potions);
+                                break;
+                            case 3:
+                                return false;
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.Escape)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+
+            static void ViewIngredients()
+            {
+                var allIngredients = InitializeIngredients();
+                int selectedIndex = 0;
+
+
+                int nameColumnWidth = 30;
+                int descriptionColumnWidth = allIngredients.Max(i => i.Description.Length) + 2;
+                int locationColumnWidth = allIngredients.Max(i => i.Location.Length) + 2;
+                int tableWidth = nameColumnWidth + descriptionColumnWidth + locationColumnWidth + 10;
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("=== Minecraft Potion Ingredients ===");
+                    Console.ResetColor();
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine($"| {"Ingredient".PadRight(nameColumnWidth)} | {"Description".PadRight(descriptionColumnWidth)} | {"Location".PadRight(locationColumnWidth)} |");
+                    Console.WriteLine(new string('=', tableWidth));
+
+                    for (int i = 0; i < allIngredients.Count; i++)
+                    {
+                        var ingredient = allIngredients[i];
+                        string name = ingredient.Name.PadRight(nameColumnWidth);
+                        string description = ingredient.Description.PadRight(descriptionColumnWidth);
+                        string location = ingredient.Location.PadRight(locationColumnWidth);
+
+                        if (i == selectedIndex)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                        }
+
+                        Console.WriteLine($"| {name} | {description} | {location} |");
+                        Console.ResetColor();
+                    }
+
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine("\nUse arrow keys to navigate, Enter to view details, 0 to return to Main Menu, X to Exit");
+
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        selectedIndex = (selectedIndex == 0) ? allIngredients.Count - 1 : selectedIndex - 1;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        selectedIndex = (selectedIndex == allIngredients.Count - 1) ? 0 : selectedIndex + 1;
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Selected Ingredient: {allIngredients[selectedIndex].Name}");
+                        Console.WriteLine($"Description: {allIngredients[selectedIndex].Description}");
+                        Console.WriteLine($"Location: {allIngredients[selectedIndex].Location}");
+                        Console.WriteLine("\nPress any key to return...");
+                        Console.ReadKey();
+                    }
+                    else if (key.Key == ConsoleKey.D0)
+                    {
+                        return; // Return to Main Menu
+                    }
+                    else if (key.Key == ConsoleKey.X)
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+            }
+
+
+            static void ViewPotionCategories(List<Potion> potions)
+            {
+                int selectedIndex = 0;
+                string[] categories = { "Positive Potions", "Negative Potions", "Neutral Potions", "Return to Main Menu" };
+                const int boxWidth = 30; // Width for text boxes
+                const int tableWidth = boxWidth + 4; //padding for borders
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("=== Select Potion Category ===");
+                    Console.ResetColor();
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine($"| {"Category",-boxWidth} |");
+                    Console.WriteLine(new string('=', tableWidth));
+
+                    for (int i = 0; i < categories.Length; i++)
+                    {
+                        string categoryText = categories[i].PadRight(boxWidth);
+
+                        if (i == selectedIndex)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.WriteLine($"| {categoryText} |");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.WriteLine($"| {categoryText} |");
+                            Console.ResetColor();
+                        }
+                    }
+
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine("\nUse arrow keys to navigate, Enter to select, X to Exit");
+
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        selectedIndex = (selectedIndex == 0) ? categories.Length - 1 : selectedIndex - 1;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        selectedIndex = (selectedIndex == categories.Length - 1) ? 0 : selectedIndex + 1;
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        if (selectedIndex == categories.Length - 1) return; // Handle return to main menu
+
+                        string selectedCategory = categories[selectedIndex].Replace(" Potions", "");
+
+                        
+                        ViewPotionRecipes(potions, selectedCategory); // I hate this code
+                    }
+                    else if (key.Key == ConsoleKey.X)
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+            }
+
+
+            static void ViewPotionRecipes(List<Potion> potions, string category)
+            {
+                var filteredPotions = potions.Where(p =>
+                    (category == "Positive" && p.IsPositive) ||
+                    (category == "Negative" && p.IsNegative) ||
+                    (category == "Neutral" && p.IsNeutral)).ToList();
+
+                int selectedIndex = 0;
+
+                // Why i do this
+                int potionNameColumnWidth = filteredPotions.Max(p => p.Name.Length) + 2;
+                int ingredientsColumnWidth = filteredPotions.Max(p => string.Join(", ", p.Ingredients.Select(ing => ing.Name)).Length) + 2;
+                int tableWidth = potionNameColumnWidth + ingredientsColumnWidth + 8;
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"=== {category} Potions ===");
+                    Console.ResetColor();
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine($"| {"Potion Name".PadRight(potionNameColumnWidth)} | {"Ingredients".PadRight(ingredientsColumnWidth)} |");
+                    Console.WriteLine(new string('=', tableWidth));
+
+                    for (int i = 0; i < filteredPotions.Count; i++)
+                    {
+                        string potionName = filteredPotions[i].Name.PadRight(potionNameColumnWidth);
+                        string ingredients = string.Join(", ", filteredPotions[i].Ingredients.Select(ing => ing.Name)).PadRight(ingredientsColumnWidth);
+
+                        if (i == selectedIndex)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                        }
+
+                        Console.WriteLine($"| {potionName} | {ingredients} |");
+                        Console.ResetColor();
+                    }
+
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine("\nUse arrow keys to navigate, Enter for details, 0 to return to Category Menu, X to Exit");
+
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.UpArrow)//KEYSaaaaaaa
+                    {
+                        selectedIndex = (selectedIndex == 0) ? filteredPotions.Count - 1 : selectedIndex - 1;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        selectedIndex = (selectedIndex == filteredPotions.Count - 1) ? 0 : selectedIndex + 1;
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Potion: {filteredPotions[selectedIndex].Name}");
+                        Console.WriteLine($"Ingredients: {string.Join(", ", filteredPotions[selectedIndex].Ingredients.Select(ing => ing.Name))}");
+                        Console.WriteLine("\nPress any key to return...");
+                        Console.ReadKey();
+                    }
+                    else if (key.Key == ConsoleKey.D0)
+                    {
+                        return; // Return to Category Menu
+                    }
+                    else if (key.Key == ConsoleKey.X)
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+            }
+
+
+            static void ViewPotionUsage(List<Potion> potions)
+            {
+                while (true)
+                {
+                    string selectedCategory = ChooseCategory();
+
+
+                    if (selectedCategory == "Return to menu")
+                    {
+                        return; // Return to Main Menu
+                    }
+
+
+                    var filteredPotions = potions.Where(p =>
+                        (selectedCategory == "Positive" && p.Category == PotionCategory.Positive) ||
+                        (selectedCategory == "Negative" && p.Category == PotionCategory.Negative) ||
+                        (selectedCategory == "Neutral" && p.Category == PotionCategory.Neutral)).ToList();
+
+                    int selectedIndex = 0;
+
+                    //0_0
+                    int potionNameColumnWidth = filteredPotions.Max(p => p.Name.Length) + 2;
+                    int effectColumnWidth = filteredPotions.Max(p => p.Effect.Length) + 2;
+                    int tableWidth = potionNameColumnWidth + effectColumnWidth + 8;
+
+                    while (true)
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine($"=== {selectedCategory} Potions ===");//:0
+                        Console.ResetColor();
+                        Console.WriteLine(new string('=', tableWidth));
+                        Console.WriteLine($"| {"Potion Name".PadRight(potionNameColumnWidth)} | {"Effect".PadRight(effectColumnWidth)} |");
+                        Console.WriteLine(new string('=', tableWidth));
+
+                        for (int i = 0; i < filteredPotions.Count; i++)
+                        {
+                            string potionName = filteredPotions[i].Name.PadRight(potionNameColumnWidth);
+                            string effect = filteredPotions[i].Effect.PadRight(effectColumnWidth);
+
+                            if (i == selectedIndex)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Gray;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                            }
+
+                            Console.WriteLine($"| {potionName} | {effect} |");
+                            Console.ResetColor();
+                        }
+
+                        Console.WriteLine(new string('=', tableWidth));
+                        Console.WriteLine("\nUse arrow keys to navigate, Enter for details, 0 to return to Category Menu, X to Exit");
+
+                        var key = Console.ReadKey(true);
+
+                        if (key.Key == ConsoleKey.UpArrow)
+                        {
+                            selectedIndex = (selectedIndex == 0) ? filteredPotions.Count - 1 : selectedIndex - 1;
+                        }
+                        else if (key.Key == ConsoleKey.DownArrow)
+                        {
+                            selectedIndex = (selectedIndex == filteredPotions.Count - 1) ? 0 : selectedIndex + 1;
+                        }
+                        else if (key.Key == ConsoleKey.Enter)
+                        {
+                            if (selectedIndex >= 0 && selectedIndex < filteredPotions.Count)
+                            {
+                                var potion = filteredPotions[selectedIndex];
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.WriteLine($"Potion: {potion.Name}");
+                                Console.WriteLine($"Duration: {potion.Duration}");
+                                Console.WriteLine($"Effect: {potion.Effect}");
+                                Console.WriteLine($"Description: {potion.Description}");
+                                Console.WriteLine($"Ingredients: {string.Join(", ", potion.Ingredients.Select(ing => ing.Name))}");
+                                Console.ResetColor();
+                                Console.WriteLine("\nPress any key to return...");
+                                Console.ReadKey();
+                            }
+                        }
+                        else if (key.Key == ConsoleKey.D0)
+                        {
+                            Console.Clear();
+                            break; // Return to Main Menu(Wait why to main menu?)
+                        }
+                        else if (key.Key == ConsoleKey.X)
+                        {
+                            Environment.Exit(0);
+                        }
+                    }
+                }
+            }
+
+
+            static string ChooseCategory()
+            {
+                string[] categories = { "Positive Potions", "Negative Potions", "Neutral Potions", "Return to Menu" };
+                int selectedIndex = 0;
+                const int boxWidth = 30;
+                const int tableWidth = boxWidth + 4;
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("=== Select Potion Category ===");
+                    Console.ResetColor();
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine($"| {"Category",-boxWidth} |");
+                    Console.WriteLine(new string('=', tableWidth));
+
+                    for (int i = 0; i < categories.Length; i++)
+                    {
+                        string categoryText = categories[i].PadRight(boxWidth);
+
+                        if (i == selectedIndex)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.WriteLine($"| {categoryText} |");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.WriteLine($"| {categoryText} |");
+                            Console.ResetColor();
+                        }
+                    }
+
+                    Console.WriteLine(new string('=', tableWidth));
+                    Console.WriteLine("\nUse arrow keys to navigate, Enter to select, X to Exit");
+
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        selectedIndex = (selectedIndex == 0) ? categories.Length - 1 : selectedIndex - 1;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        selectedIndex = (selectedIndex == categories.Length - 1) ? 0 : selectedIndex + 1;
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        switch (selectedIndex)
+                        {
+                            case 0:
+                                return "Positive";
+                            case 1:
+                                return "Negative";
+                            case 2:
+                                return "Neutral";
+                            case 3:
+                                return "Return to menu"; //menu
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.X)
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+            }
+
+
+        }
+    }
+}
